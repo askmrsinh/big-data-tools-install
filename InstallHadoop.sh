@@ -86,6 +86,12 @@ sleep 2s
 echo -e  'y\n' | ssh-keygen -t rsa -f ~/.ssh/id_rsa -P ''
 cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
 sudo systemctl restart sshd.service || sudo service ssh restart
+cat << EOT >> ~/.ssh/config
+Host localhost
+   StrictHostKeyChecking no
+Host 0.0.0.0
+   StrictHostKeyChecking no
+EOT
 
 sleep 1s
 echo -e "\n\n"
@@ -163,7 +169,7 @@ cat << EOT >> /usr/local/hadoop/etc/hadoop/core-site.xml
 <configuration>
   <property>
      <name>fs.default.name</name>
-     <value>hdfs://localhost:8020</value>
+     <value>hdfs://localhost:9000</value>
   </property>
 </configuration>
 EOT
@@ -236,10 +242,8 @@ echo -e "\e[32mSTEP  (6 of 6): Strating Hadoop daemons\e[0m"
 echo -e "\e[32m#######################################\n\e[0m"
 sleep 2s
 
-echo -e "yes\nyes\n" | /usr/local/hadoop/sbin/start-dfs.sh || true
-echo -e "yes\nyes\n" | /usr/local/hadoop/sbin/start-yarn.sh || true
-/usr/local/hadoop/sbin/start-dfs.sh &>/dev/null
-/usr/local/hadoop/sbin/start-yarn.sh &>/dev/null
+/usr/local/hadoop/sbin/start-dfs.sh
+/usr/local/hadoop/sbin/start-yarn.sh
 
 sleep 1s
 echo -e "\n\n"
