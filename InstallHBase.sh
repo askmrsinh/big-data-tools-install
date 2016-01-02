@@ -121,7 +121,7 @@ export HBASE_HOME=/usr/local/hbase
 export PATH=$PATH:$HBASE_HOME/bin
 #HBase VARIABLES END
 EOT
-source ~/.bashrc
+source ~/.bashrc || true
 
 sed -i.bak -e 's/# export JAVA_HOME=.*/export JAVA_HOME=$(readlink -f \/usr\/bin\/java | sed "s:jre\/bin\/java::")/g' /usr/local/hbase/conf/hbase-env.sh
 

@@ -100,7 +100,7 @@ export HIVE_HOME=/usr/local/hive
 export PATH=$PATH:$HIVE_HOME/bin
 #HIVE VARIABLES END
 EOT
-source ~/.bashrc
+source ~/.bashrc || true
 set +x
 
 

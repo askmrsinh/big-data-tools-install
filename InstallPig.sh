@@ -100,7 +100,7 @@ export PIG_HOME=/usr/local/pig
 export PATH=$PATH:$PIG_HOME/bin
 #PIG VARIABLES END
 EOT
-source ~/.bashrc
+source ~/.bashrc || true
 set +x
 
 
