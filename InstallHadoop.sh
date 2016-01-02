@@ -157,7 +157,7 @@ export HADOOP_OPTS="-Djava.library.path=$HADOOP_HOME/lib"
 export HADOOP_CLASSPATH=${JAVA_HOME}/lib/tools.jar
 #HADOOP VARIABLES END
 EOT
-source ~/.bashrc
+source ~/.bashrc || true
 
 java -version
 javac -version
