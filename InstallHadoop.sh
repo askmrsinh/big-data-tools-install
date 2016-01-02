@@ -93,6 +93,11 @@ Host 0.0.0.0
    StrictHostKeyChecking no
 EOT
 
+chmod 600 ~/.ssh/config
+chmod 600 ~/.ssh/id_rsa
+chmod 644 ~/.ssh/id_rsa.pub
+chmod 644 ~/.ssh/known_hosts
+
 sleep 1s
 echo -e "\n\n"
 
