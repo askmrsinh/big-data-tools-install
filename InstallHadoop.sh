@@ -44,7 +44,7 @@ else
   \e[0m"
   while true
   do
-    read -r -p 'Do you wish to continue (yes/no)?' choice
+    read -r -p 'Do you wish to continue (yes/no)? ' choice
     case "$choice" in
       [Nn]* ) echo 'Exiting.'; exit;;
       [Yy]* ) echo ''; break;;
@@ -53,8 +53,7 @@ else
   done
 fi
 
-set -eu
-set -o pipefail
+set -euo pipefail
 
 
 
@@ -64,8 +63,10 @@ echo -e "\e[32m##############################################\n\e[0m"
 sleep 2s
 
 if [ -f /etc/redhat-release ]; then
+  sudo yum clean expire-cache
   sudo yum install -y java-*-openjdk-devel openssh rsync
 elif [ -f /etc/debian_version ]; then
+  sudo apt-get update
   sudo apt-get install -y default-jdk openssh-server rsync
 else
   lsb_release -si
@@ -83,6 +84,19 @@ echo -e "\e[32mSTEP  (2 of 6): Setting up SSH keys\e[0m"
 echo -e "\e[32m###################################\n\e[0m"
 sleep 2s
 
+if [[ -d ~/.ssh ]]; then
+  echo -e "\e[34mBacking up \`~/.ssh' folder contents to \`~/.ssh.old'.\e[0m"
+  mkdir -p ~/.ssh.old
+  sudo mv --backup=t ~/.ssh/* ~/.ssh.old 2>/dev/null || true
+else
+  mkdir ~/.ssh
+fi
+
+sudo chown $USER:$USER ~/.ssh
+chmod 700 ~/.ssh
+
+touch ~/.ssh/known_hosts
+
 echo -e  'y\n' | ssh-keygen -t rsa -f ~/.ssh/id_rsa -P ''
 cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
 sudo systemctl restart sshd.service || sudo service ssh restart
@@ -94,6 +108,7 @@ Host 0.0.0.0
 EOT
 
 chmod 600 ~/.ssh/config
+chmod 600 ~/.ssh/authorized_keys
 chmod 600 ~/.ssh/id_rsa
 chmod 644 ~/.ssh/id_rsa.pub
 chmod 644 ~/.ssh/known_hosts
@@ -112,13 +127,34 @@ FILE=$(wget "http://www.eu.apache.org/dist/hadoop/common/stable/" -O - | grep -P
 URL=http://www.eu.apache.org/dist/hadoop/common/stable/$FILE
 
 if [[ ! -f "$FILE" ]]; then
-  echo -e "\e[34mDownloading file \`$FILE'; this may take time.\e[0m"
+  echo -e "\e[34mDownloading file \`$FILE'; this may take a few minutes.\e[0m"
   wget -c "$URL" -O "$FILE"
   DEL_FILE=true
 else
   echo -e "\e[34mFile \`$FILE' already there; not retrieving.\e[0m"
   wget -c "$URL.mds" -O - | sed '7,$ d' | tr -d " \t\n\r" | tr ":" " " | awk '{t=$1;$1=$NF;$NF=t}1' | awk '$1=$1' OFS="  " | cut -c 5- | md5sum -c
   DEL_FILE=false
+fi
+
+if [[ -d /usr/local/hadoop ]]; then
+  echo -e "\e[34m
+  Removing previous Hadoop installation directory;
+    \`/usr/local/hadoop'
+  \e[0m"
+  /usr/local/hadoop/sbin/stop-dfs.sh &>/dev/null || true
+  /usr/local/hadoop/sbin/stop-yarn.sh &>/dev/null || true
+  sudo rm -rf /usr/local/hadoop
+fi
+
+if [[ -d ~/hadoop_store ]]; then
+  echo -e "\e[34m
+  Removing previous Hadoop distributed file system directories;
+    \`~/hadoop_store/hdfs/namenode'
+    \`~/hadoop_store/hdfs/namenode'
+  \e[0m"
+  rm -rf ~/hadoop_store/hdfs/namenode
+  rm -rf ~/hadoop_store/hdfs/datanode
+  sudo rm -rf /tmp/hadoop-$USER
 fi
 
 echo -e "\e[34mExtracting file \`$FILE'; this may take a few minutes.\e[0m"
@@ -130,8 +166,8 @@ if [[ "$DEL_FILE" == "true" ]]; then
 fi
 
 sudo mv /usr/local/hadoop-*/ /usr/local/hadoop
-CURRENT=$USER
-sudo chown -R $CURRENT:$CURRENT /usr/local/hadoop
+sudo chown -R $USER:$USER /usr/local/hadoop
+
 ls -las /usr/local
 
 sleep 1s
@@ -143,9 +179,12 @@ clear
 echo -e "\e[32mSTEP  (4 of 6): Editing Configuration Files\e[0m"
 echo -e "\e[32m###########################################\n\e[0m"
 
-set -x
+set -xv
 sudo update-alternatives --auto java
+java -version
+javac -version
 cp ~/.bashrc ~/.bashrc.bak
+sed -i -e '/#HADOOP VARIABLES START/,+11d' ~/.bashrc
 cat << 'EOT' >> ~/.bashrc
 #SET JDK
 export JAVA_HOME=$(readlink -f /usr/bin/java | sed "s:jre/bin/java::")
@@ -162,10 +201,6 @@ export HADOOP_OPTS="-Djava.library.path=$HADOOP_HOME/lib"
 export HADOOP_CLASSPATH=${JAVA_HOME}/lib/tools.jar
 #HADOOP VARIABLES END
 EOT
-source ~/.bashrc || true
-
-java -version
-javac -version
 
 sed -i.bak -e 's/export JAVA_HOME=${JAVA_HOME}/export JAVA_HOME=$(readlink -f \/usr\/bin\/java | sed "s:jre\/bin\/java::")/g' /usr/local/hadoop/etc/hadoop/hadoop-env.sh
 
@@ -173,7 +208,7 @@ sed -n -i.bak '/<configuration>/q;p'  /usr/local/hadoop/etc/hadoop/core-site.xml
 cat << EOT >> /usr/local/hadoop/etc/hadoop/core-site.xml
 <configuration>
   <property>
-     <name>fs.default.name</name>
+     <name>fs.defaultFS</name>
      <value>hdfs://localhost:9000</value>
   </property>
 </configuration>
@@ -204,8 +239,8 @@ cat << EOT >> /usr/local/hadoop/etc/hadoop/mapred-site.xml
 </configuration>
 EOT
 
-mkdir -p /home/$USER/hadoop_store/hdfs/namenode
-mkdir -p /home/$USER/hadoop_store/hdfs/datanode
+mkdir -p ~/hadoop_store/hdfs/namenode
+mkdir -p ~/hadoop_store/hdfs/datanode
 sed -n -i.bak '/<configuration>/q;p'  /usr/local/hadoop/etc/hadoop/hdfs-site.xml
 cat << EOT >> /usr/local/hadoop/etc/hadoop/hdfs-site.xml
 <configuration>
@@ -223,7 +258,7 @@ cat << EOT >> /usr/local/hadoop/etc/hadoop/hdfs-site.xml
   </property>
 </configuration>
 EOT
-set +x
+set +xv
 
 sleep 2s
 echo -e "\n\n"
@@ -257,16 +292,23 @@ echo -e "\n\n"
 
 clear
 jps
-google-chrome http://$HOSTNAME:50070 || firefox http://$HOSTNAME:50070 || midori http://$HOSTNAME:50070 || true
+#google-chrome http://$HOSTNAME:50070 || firefox http://$HOSTNAME:50070 || midori http://$HOSTNAME:50070 || true
 echo -e "\n\n"
 
+set +euo pipefail
 
+
+
+source ~/.bashrc &>/dev/null
 
 clear
 echo -e "\e[32m
 Hadoop installation was successful!
 Open a new terminal and execute:
-  $ hadoop version
+  $ hadoop
+
+Watch step-by-step video on YouTube.
+  https://youtu.be/gWkbPVNER5k
 \e[0m"
 
 
@@ -274,8 +316,3 @@ Open a new terminal and execute:
 #echo -e "Stopping Hadoop daemons\n"
 #/usr/local/hadoop/sbin/stop-dfs.sh
 #/usr/local/hadoop/sbin/stop-yarn.sh
-
-
-
-# Online Tutorial
-# https://youtu.be/gWkbPVNER5k

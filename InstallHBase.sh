@@ -44,7 +44,7 @@ else
   \e[0m"
   while true
   do
-    read -r -p 'Do you wish to continue (yes/no)?' choice
+    read -r -p 'Do you wish to continue (yes/no)? ' choice
     case "$choice" in
       [Nn]* ) echo 'Exiting.'; exit;;
       [Yy]* ) echo ''; break;;
@@ -53,8 +53,7 @@ else
   done
 fi
 
-set -eu
-set -o pipefail
+set -euo pipefail
 
 
 
@@ -64,8 +63,10 @@ echo -e "\e[32m###############\n\e[0m"
 sleep 2
 
 if [ -f /etc/redhat-release ]; then
+  sudo yum clean expire-cache
   sudo yum install -y java-*-openjdk-devel
 elif [ -f /etc/debian_version ]; then
+  sudo apt-get update
   sudo apt-get install -y default-jdk
 else
   lsb_release -si
@@ -87,13 +88,30 @@ FILE=$(wget "http://www.us.apache.org/dist/hbase/stable/" -O - | grep -Po "hbase
 URL=http://www.us.apache.org/dist/hbase/stable/$FILE
 
 if [[ ! -f "$FILE" ]]; then
-  echo -e "\e[34mDownloading file \`$FILE'; this may take time.\e[0m"
+  echo -e "\e[34mDownloading file \`$FILE'; this may take a few minutes.\e[0m"
   wget -c "$URL" -O "$FILE"
   DEL_FILE=true
 else
   echo -e "\e[34mFile \`$FILE' already there; not retrieving.\e[0m"
   wget -c "$URL.mds" -O - | sed '3,$ d' | tr -d " \t\n\r" | tr ":" " " | awk '{t=$1;$1=$NF;$NF=t}1' | awk '$1=$1' OFS="  " | cut -c 5- | md5sum -c
   DEL_FILE=false
+fi
+
+if [[ -d /usr/local/hbase ]]; then
+  echo -e "\e[34m
+  Removing previous HBase installation directory;
+    \`/usr/local/hbase'
+  \e[0m"
+  /usr/local/hbase/bin/stop-hbase.sh &>/dev/null || true
+  sudo rm -rf /usr/local/hbase
+fi
+
+if [[ -d ~/hadoop_store ]]; then
+  echo -e "\e[34m
+  Removing previous HBase root directory;
+    \`~/hadoop_store/hbase'
+  \e[0m"
+  rm -rf ~/hadoop_store/hbase
 fi
 
 echo -e "\e[34mExtracting file \`$FILE'; this may take a few minutes.\e[0m"
@@ -105,23 +123,26 @@ if [[ "$DEL_FILE" == "true" ]]; then
 fi
 
 sudo mv /usr/local/hbase-*/ /usr/local/hbase
-CURRENT=$USER
-sudo chown -R $CURRENT:$CURRENT /usr/local/hbase
+sudo chown -R $USER:$USER /usr/local/hbase
+
 ls -las /usr/local
 
 sleep 1s
 echo -e "\n\n"
 
 
-set -x
+set -xv
 sudo update-alternatives --auto java
+java -version
+javac -version
+cp ~/.bashrc ~/.bashrc.bak
+sed -i -e '/#HBase VARIABLES START/,+3d' ~/.bashrc
 cat << 'EOT' >> ~/.bashrc
 #HBase VARIABLES START
 export HBASE_HOME=/usr/local/hbase
 export PATH=$PATH:$HBASE_HOME/bin
 #HBase VARIABLES END
 EOT
-source ~/.bashrc || true
 
 sed -i.bak -e 's/# export JAVA_HOME=.*/export JAVA_HOME=$(readlink -f \/usr\/bin\/java | sed "s:jre\/bin\/java::")/g' /usr/local/hbase/conf/hbase-env.sh
 
@@ -134,10 +155,23 @@ sudo cat << EOT >> /usr/local/hbase/conf/hbase-site.xml
   </property>
 </configuration>
 EOT
-set +x
+set +xv
 
 
 /usr/local/hbase/bin/start-hbase.sh
+
+
+
+clear
+jps
+#google-chrome http://$HOSTNAME:16010 || firefox http://$HOSTNAME:16010 || midori http://$HOSTNAME:16010 || true
+echo -e "\n\n"
+
+set +euo pipefail
+
+
+
+source ~/.bashrc &>/dev/null
 
 
 
