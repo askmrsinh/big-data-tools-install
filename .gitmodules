@@ -1,0 +1,3 @@
+[submodule "hadoop-book"]
+	path = hadoop-book
+	url = git@github.com:tomwhite/hadoop-book.git
