@@ -7,15 +7,15 @@ permalink:        pretty
 #relative_permalinks: true
 
 # Setup
-#title:            Hyde
-#tagline:          'A Jekyll theme'
-#description:      'A brazen two-column <a href="http://jekyllrb.com" target="_blank">Jekyll</a> theme that pairs a prominent sidebar with uncomplicated content. Made by <a href="https://twitter.com/mdo" target="_blank">@mdo</a>.'
-#url:              http://hyde.getpoole.com
+title:            BD_STTP_2016
+tagline:          'Big Data Short Term Training Programme 2016'
+description:      'Some snippets used during the Big Data Short Term Training Programme 2016 at <a href="www.fcrit.ac.in/">F.C.R.I.T., Vashi</a>.'
+#url:              https://github.com/user501254/
 baseurl:          /BD_STTP_2016
 
 author:
-#  name:           'Mark Otto'
-#  url:            https://twitter.com/mdo
+  name:           'Ashesh Kumar Singh'
+  url:            https://plus.google.com/+AsheshKumar501254
 
 paginate:         5
 
