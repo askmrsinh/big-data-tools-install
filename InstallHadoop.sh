@@ -35,8 +35,9 @@ else
   This will install the latest version of Hadoop on your system.\n
   Make sure that you have the following before continuing:
     - working internet connection
-        for downloading installation files if
-        not found in the parent directory 
+        for downloading any required packages and 
+        also the latest stable Hadoop binary if
+        not found in the parent directory
         ie. $PWD
     - fairly up to date system
     - enough free disk space
