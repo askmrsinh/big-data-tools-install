@@ -34,7 +34,7 @@ else
   echo -e "\e[34m
   This will install the latest version of Hadoop on your system.\n
   Make sure that you have the following before continuing:
-    - working internet connection (optional)
+    - working internet connection
         for downloading installation files if
         not found in the parent directory 
         ie. $PWD
