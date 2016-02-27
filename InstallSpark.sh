@@ -67,6 +67,8 @@ if [ -f /etc/redhat-release ]; then
   sudo yum clean expire-cache
   sudo yum install -y java-*-openjdk-devel scala python sbt
 elif [ -f /etc/debian_version ]; then
+  echo "deb https://dl.bintray.com/sbt/debian /" | sudo tee -a /etc/apt/sources.list.d/sbt.list
+  sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 642AC823
   sudo apt-get update
   sudo apt-get install -y default-jdk scala python sbt
 else
