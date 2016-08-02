@@ -1,6 +1,8 @@
 [submodule "hadoop-book"]
 	path = hadoop-book
 	url = git@github.com:tomwhite/hadoop-book.git
+	ignore = dirty
 [submodule "hbase-book"]
 	path = hbase-book
 	url = git@github.com:larsgeorge/hbase-book.git
+	ignore = dirty
