@@ -1,8 +1,7 @@
 # BD_STTP_2016
-## Big Data Short Term Training Programme 2016
+### Big Data Short Term Training Programme 2016
 
-This repository contains the scripts used to setup Big Data Technology stack.
-
+This repository contains the scripts used to setup Big Data Technology stack used during the programme.
 
 ### Usage
 Open a Terminal window and follow these commands:
