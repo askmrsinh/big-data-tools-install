@@ -138,11 +138,20 @@ set +x
 source ~/.bashrc &>/dev/null
 
 clear
-echo -e "\e[32m
-Spark installation was successful!
-Open a new terminal and execute:
-  $ spark-shell -help
-\e[0m"
+if [[ ! -f "/usr/local/hadoop/" ]]; then
+  echo -e "\e[33m
+  Spark installation was successful but Hadoop is not installed.
+  Please install Hadoop using the script:
+    $ ./InstallHadoop.sh
+  Spark will not work without Hadoop.
+  \e[0m"
+else
+  echo -e "\e[32m
+  Spark installation was successful!
+  Open a new terminal and execute:
+    $ spark-shell -help
+  \e[0m"
+fi
 
 
 
