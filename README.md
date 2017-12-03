@@ -14,7 +14,7 @@ Open a Terminal window and follow these steps:
 4. Run the desired installation script  
    For example, if you wish to install Hadoop use `./InstallHadoop.sh`
 
-These scripts automatically take care of downloadin & unpacking the latest binaries and basic configuration.
+These scripts automatically take care of downloading & unpacking the latest binaries and basic configuration.
 You may be asked for your user account password during the installation process.
 
 ---
