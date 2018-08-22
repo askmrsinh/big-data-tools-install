@@ -17,5 +17,10 @@ Open a Terminal window and follow these steps:
 These scripts automatically take care of downloading & unpacking the latest binaries and basic configuration.
 You may be asked for your user account password during the installation process.
 
----
+### TO-DO
+- [ ] Setup test cases
+- [ ] Merge all scripts into one master script
+- [ ] Update related project blog posts
+___
+
 _Note: do not `sudo` these above commands._
