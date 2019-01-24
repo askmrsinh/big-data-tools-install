@@ -32,24 +32,47 @@
       </script>
       <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
     </div>
-    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-    <!-- test -->
-    <ins class="adsbygoogle"
-         style="display:block"
-         data-ad-client="ca-pub-2940148750940936"
-         data-ad-slot="9093092606"
-         data-ad-format="auto"></ins>
-    <script>
-    (adsbygoogle = window.adsbygoogle || []).push({});
+    <script type="text/javascript">
+
+        // Passive Event Listeners (coz Lighthouse won't stop complaining)
+        // Test via a getter in the options object to see if the passive property is accessed
+        var supportsPassive = false;
+        try {
+            var opts = Object.defineProperty({}, 'passive', {
+                get: function () {
+                    supportsPassive = true;
+                }
+            });
+            window.addEventListener("testPassive", null, opts);
+            window.removeEventListener("testPassive", null, opts);
+        } catch (e) { }
+
+        // Use our detect's results. passive applied if supported, capture will be false either way.
+        ['wheel', 'mousewheel', 'touchstart', 'touchmove'].forEach(function (e) {
+            document.addEventListener(e, function () { }, supportsPassive ? { passive: true } : false);
+        });
     </script>
+    <script type="text/javascript">
+        WebFontConfig = {
+            google: { families: ['Roboto', 'Roboto+Slab'] }
+        };
+        (function () {
+            var wf = document.createElement('script');
+            wf.src = 'https://cdnjs.cloudflare.com/ajax/libs/webfont/1.6.28/webfontloader.js';
+            wf.type = 'text/javascript';
+            wf.async = 'true';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(wf, s);
+        })();
+    </script>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-71845746-1"></script>
     <script>
-      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-      
-      ga('create', 'UA-71845746-1', 'auto');
-      ga('send', 'pageview');
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'UA-71845746-1');
     </script>
 
   </body>

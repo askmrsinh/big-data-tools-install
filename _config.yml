@@ -1,6 +1,6 @@
 # Dependencies
 markdown:         redcarpet
-highlighter:      pygments
+highlighter:      rouge
 
 # Permalinks
 permalink:        pretty
@@ -15,7 +15,7 @@ baseurl:          /BD_STTP_2016
 
 author:
   name:           'Ashesh Kumar Singh'
-  url:            https://plus.google.com/+AsheshKumar501254
+  url:            https://user501254.github.io
 
 paginate:         5
 
@@ -25,4 +25,4 @@ version:          2.1.0
 github:
   repo:           https://github.com/user501254/BD_STTP_2016
   
-gems: [jekyll-paginate, jekyll-gist]
+plugins: [jekyll-paginate, jekyll-gist]
