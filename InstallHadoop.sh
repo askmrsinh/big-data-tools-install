@@ -188,7 +188,7 @@ cp ~/.bashrc ~/.bashrc.bak
 sed -i -e '/#HADOOP VARIABLES START/,+11d' ~/.bashrc
 cat << 'EOT' >> ~/.bashrc
 #SET JDK
-export JAVA_HOME=$(readlink -f /usr/bin/java | sed "s:jre/bin/java::")
+export JAVA_HOME=$(readlink -f /usr/bin/java | sed "s:bin/java::")
 #HADOOP VARIABLES START
 export HADOOP_HOME=/usr/local/hadoop
 export PATH=$PATH:$HADOOP_HOME/bin
@@ -203,7 +203,7 @@ export HADOOP_CLASSPATH=${JAVA_HOME}/lib/tools.jar
 #HADOOP VARIABLES END
 EOT
 
-sed -i.bak -e 's/export JAVA_HOME=${JAVA_HOME}/export JAVA_HOME=$(readlink -f \/usr\/bin\/java | sed "s:jre\/bin\/java::")/g' /usr/local/hadoop/etc/hadoop/hadoop-env.sh
+sed -i.bak -e 's/# export JAVA_HOME=.*/export JAVA_HOME=$(readlink -f \/usr\/bin\/java | sed "s:\/bin\/java::")/g' /usr/local/hadoop/etc/hadoop/hadoop-env.sh
 
 sed -n -i.bak '/<configuration>/q;p'  /usr/local/hadoop/etc/hadoop/core-site.xml
 cat << EOT >> /usr/local/hadoop/etc/hadoop/core-site.xml
@@ -229,7 +229,6 @@ cat << EOT >> /usr/local/hadoop/etc/hadoop/yarn-site.xml
 </configuration>
 EOT
 
-cp /usr/local/hadoop/etc/hadoop/mapred-site.xml.template /usr/local/hadoop/etc/hadoop/mapred-site.xml
 sed -n -i.bak '/<configuration>/q;p'  /usr/local/hadoop/etc/hadoop/mapred-site.xml
 cat << EOT >> /usr/local/hadoop/etc/hadoop/mapred-site.xml
 <configuration>
