@@ -136,6 +136,7 @@ echo -e "\e[34mPlease choose JDK8 as default.\e[0m"
 sudo update-alternatives --config java
 java -version
 javac -version
+echo -e "\e[34mAdding Global Variables to ~/.bashrc file.\e[0m"
 cp ~/.bashrc ~/.bashrc.bak
 sed -i -e '/#HBase VARIABLES START/,+3d' ~/.bashrc
 cat << 'EOT' >> ~/.bashrc

@@ -94,6 +94,7 @@ echo -e "\n\n"
 
 
 set -x
+echo -e "\e[34mAdding Global Variables to ~/.bashrc file.\e[0m"
 cat << 'EOT' >> ~/.bashrc
 #HIVE VARIABLES START
 export HIVE_HOME=/usr/local/hive

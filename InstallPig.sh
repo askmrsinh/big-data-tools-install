@@ -94,6 +94,7 @@ echo -e "\n\n"
 
 
 set -x
+echo -e "\e[34mAdding Global Variables to ~/.bashrc file.\e[0m"
 cat << 'EOT' >> ~/.bashrc
 #PIG VARIABLES START
 export PIG_HOME=/usr/local/pig
