@@ -65,12 +65,12 @@ sleep 2s
 
 if [ -f /etc/redhat-release ]; then
   sudo yum clean expire-cache
-  sudo yum install -y java-*-openjdk-devel scala python sbt
+  sudo yum install -y java-1.8.0-openjdk-devel scala python sbt
 elif [ -f /etc/debian_version ]; then
   echo "deb https://dl.bintray.com/sbt/debian /" | sudo tee -a /etc/apt/sources.list.d/sbt.list
   sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 642AC823
   sudo apt-get update
-  sudo apt-get install -y default-jdk scala python sbt
+  sudo apt-get install -y openjdk-8-jdk scala python sbt
 else
   lsb_release -si
   echo "\e[31mCan't use yum or apt-get, check installation script.\n\e[0m"
@@ -119,6 +119,10 @@ echo -e "\n\n"
 
 
 set -x
+echo -e "\e[34mPlease choose JDK8 as default.\e[0m"
+sudo update-alternatives --config java
+java -version
+javac -version
 cat << 'EOT' >> ~/.bashrc
 #SPARK VARIABLES START
 export SPARK_HOME=/usr/local/spark

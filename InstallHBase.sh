@@ -64,10 +64,10 @@ sleep 2
 
 if [ -f /etc/redhat-release ]; then
   sudo yum clean expire-cache
-  sudo yum install -y java-*-openjdk-devel
+  sudo yum install -y java-1.8.0-openjdk-devel
 elif [ -f /etc/debian_version ]; then
   sudo apt-get update
-  sudo apt-get install -y default-jdk
+  sudo apt-get install -y openjdk-8-jdk
 else
   lsb_release -si
   echo "\e[31mCan't use yum or apt-get, check installation script.\n\e[0m"
@@ -132,7 +132,8 @@ echo -e "\n\n"
 
 
 set -xv
-sudo update-alternatives --auto java
+echo -e "\e[34mPlease choose JDK8 as default.\e[0m"
+sudo update-alternatives --config java
 java -version
 javac -version
 cp ~/.bashrc ~/.bashrc.bak
