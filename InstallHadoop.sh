@@ -237,7 +237,7 @@ cat << EOT >> /usr/local/hadoop/etc/hadoop/mapred-site.xml
      <name>mapreduce.framework.name</name>
      <value>yarn</value>
   </property>
-  property>
+  <property>
     <name>yarn.app.mapreduce.am.env</name>
     <value>HADOOP_MAPRED_HOME=$HADOOP_HOME</value>
   </property>
