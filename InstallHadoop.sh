@@ -142,8 +142,7 @@ if [[ -d /usr/local/hadoop ]]; then
   Removing previous Hadoop installation directory;
     \`/usr/local/hadoop'
   \e[0m"
-  /usr/local/hadoop/sbin/stop-dfs.sh &>/dev/null || true
-  /usr/local/hadoop/sbin/stop-yarn.sh &>/dev/null || true
+  /usr/local/hadoop/sbin/stop-all.sh &>/dev/null || true
   sudo rm -rf /usr/local/hadoop
 fi
 
@@ -295,8 +294,7 @@ echo -e "\e[32mSTEP  (6 of 6): Strating Hadoop daemons\e[0m"
 echo -e "\e[32m#######################################\n\e[0m"
 sleep 2s
 
-/usr/local/hadoop/sbin/start-dfs.sh
-/usr/local/hadoop/sbin/start-yarn.sh
+/usr/local/hadoop/sbin/start-all.sh
 
 sleep 1s
 echo -e "\n\n"
