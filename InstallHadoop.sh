@@ -88,7 +88,7 @@ sleep 2s
 if [[ -d ~/.ssh ]]; then
   echo -e "\e[34mBacking up \`~/.ssh' folder contents to \`~/.ssh.old'.\e[0m"
   mkdir -p ~/.ssh.old
-  sudo mv --backup=t ~/.ssh/* ~/.ssh.old 2>/dev/null || true
+  sudo cp --backup=t ~/.ssh/* ~/.ssh.old 2>/dev/null || true
 else
   mkdir ~/.ssh
 fi
@@ -98,9 +98,18 @@ chmod 700 ~/.ssh
 
 touch ~/.ssh/known_hosts
 
-echo -e  'y\n' | ssh-keygen -t rsa -f ~/.ssh/id_rsa -P ''
+if [ ! -f ~/.ssh/id_rsa ]; then
+  echo -e "\e[34mGenerating new SSH keys.\e[0m"
+  echo -e  'y\n' | ssh-keygen -t rsa -f ~/.ssh/id_rsa -P ''
+fi
+echo -e "\e[34mAdding \`~/.ssh/id_rsa.pub' to list of authorized keys.\e[0m"
 cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+
+echo -e "\e[34mEnabling SSH service to start on boot.\e[0m"
+sudo systemctl enable ssh.service || sudo service ssh enable
 sudo systemctl restart sshd.service || sudo service ssh restart
+
+echo -e "\e[34mUpdating \`~/.ssh/config'.\e[0m"
 cat << EOT >> ~/.ssh/config
 Host localhost
    StrictHostKeyChecking no
