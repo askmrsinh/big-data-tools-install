@@ -239,15 +239,15 @@ cat << EOT >> /usr/local/hadoop/etc/hadoop/mapred-site.xml
   </property>
   <property>
     <name>yarn.app.mapreduce.am.env</name>
-    <value>HADOOP_MAPRED_HOME=$HADOOP_HOME</value>
+    <value>HADOOP_MAPRED_HOME=/usr/local/hadoop</value>
   </property>
   <property>
     <name>mapreduce.map.env</name>
-    <value>HADOOP_MAPRED_HOME=$HADOOP_HOME</value>
+    <value>HADOOP_MAPRED_HOME=/usr/local/hadoop</value>
   </property>
   <property>
     <name>mapreduce.reduce.env</name>
-    <value>HADOOP_MAPRED_HOME=$HADOOP_HOME</value>
+    <value>HADOOP_MAPRED_HOME=/usr/local/hadoop</value>
   </property>
 </configuration>
 EOT
