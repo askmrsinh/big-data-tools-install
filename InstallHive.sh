@@ -81,12 +81,12 @@ sudo tar xfz "$FILE" -C /usr/local
 
 if [[ "$DEL_FILE" == "true" ]]; then
   echo -e "\e[34mDeleting file \`$FILE'; to save storage space.\e[0m"
-  rm -rf $FILE
+  rm -rf "$FILE"
 fi
 
 sudo mv /usr/local/apache-hive-*/ /usr/local/hive
 CURRENT=$USER
-sudo chown -R $CURRENT:$CURRENT /usr/local/hive
+sudo chown -R "$CURRENT":"$CURRENT" /usr/local/hive
 ls -las /usr/local
 
 sleep 1s

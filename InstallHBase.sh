@@ -119,11 +119,11 @@ sudo tar xfz "$FILE" -C /usr/local
 
 if [[ "$DEL_FILE" == "true" ]]; then
   echo -e "\e[34mDeleting file \`$FILE'; to save storage space.\e[0m"
-  rm -rf $FILE
+  rm -rf "$FILE"
 fi
 
 sudo mv /usr/local/hbase-*/ /usr/local/hbase
-sudo chown -R $USER:$USER /usr/local/hbase
+sudo chown -R "$USER":"$USER" /usr/local/hbase
 
 ls -las /usr/local
 

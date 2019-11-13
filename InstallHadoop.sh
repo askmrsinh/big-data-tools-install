@@ -93,7 +93,7 @@ else
   mkdir ~/.ssh
 fi
 
-sudo chown $USER:$USER ~/.ssh
+sudo chown "$USER":"$USER" ~/.ssh
 chmod 700 ~/.ssh
 
 touch ~/.ssh/known_hosts
@@ -163,7 +163,7 @@ if [[ -d ~/hadoop_store ]]; then
   \e[0m"
   rm -rf ~/hadoop_store/hdfs/namenode
   rm -rf ~/hadoop_store/hdfs/datanode
-  sudo rm -rf /tmp/hadoop-$USER
+  sudo rm -rf "/tmp/hadoop-$USER"
 fi
 
 echo -e "\e[34mExtracting file \`$FILE'; this may take a few minutes.\e[0m"
@@ -171,11 +171,11 @@ sudo tar xfz "$FILE" -C /usr/local
 
 if [[ "$DEL_FILE" == "true" ]]; then
   echo -e "\e[34mDeleting file \`$FILE'; to save storage space.\e[0m"
-  rm -rf $FILE
+  rm -rf "$FILE"
 fi
 
 sudo mv /usr/local/hadoop-*/ /usr/local/hadoop
-sudo chown -R $USER:$USER /usr/local/hadoop
+sudo chown -R "$USER":"$USER" /usr/local/hadoop
 
 ls -las /usr/local
 
